@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="pageTitleRapid">modelhead - 3D Head Reconstruction (Rapid)</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>modelhead</h1>
+      <p class="subtitle" data-i18n="subtitleRapid">Upload a <strong>single front photo</strong> of a person's head and get a 3D-printable STL model back in under a minute.</p>
+      <p class="nav-links">
+        <a href="index2.html" data-i18n="navToPro">Switch to Pro (multi-view)</a>
+      </p>
+    </header>
+
+    <main>
+      <!-- Set API endpoint for this page -->
+      <script>window.API_ENDPOINT = '/reconstruct';</script>
+
+      <div class="card upload-card" id="uploadCard">
+        <div class="option-row">
+          <label for="userName" class="name-caption" data-i18n="name">Name:</label>
+          <span class="required-badge" data-i18n="required">Required</span>
+          <input type="text" id="userName" data-i18n-placeholder="namePlaceholder" placeholder="Please input your name" required>
+        </div>
+
+        <h2 data-i18n="uploadTitleRapid">📸 Upload Photo</h2>
+        <p class="views-hint" data-i18n="viewHintRapid">Upload a front-facing photo of the person's head.</p>
+
+        <div class="single-view">
+          <div class="view-card" data-view="front">
+            <div class="view-label"><span data-i18n="viewFront">Front</span> <span class="required-badge" data-i18n="required">Required</span></div>
+            <div class="view-upload" data-view="front">
+              <div class="view-dropzone" id="dropZoneFront">
+                <div class="view-dropzone-content" id="dropContentFront">
+                  <div class="view-icon">👤</div>
+                  <p class="drop-text" data-i18n="dropText">Click or drag a photo</p>
+                </div>
+                <div class="view-preview" id="previewFront" style="display:none">
+                  <img id="previewImageFront" alt="Front view">
+                  <button class="view-change-btn" data-view="front" data-i18n-value="change">Change</button>
+                </div>
+              </div>
+              <input type="file" class="view-file-input" id="fileInputFront" accept="image/jpeg,image/png,image/webp" hidden>
+            </div>
+          </div>
+        </div>
+
+        <div class="options">
+          <div class="option-row">
+            <label for="scaleMm" data-i18n="maxSize">Max size:</label>
+            <input type="range" id="scaleMm" min="30" max="300" value="60">
+            <span id="scaleLabel">60 mm</span>
+          </div>
+          <div class="option-row">
+            <label class="checkbox-label">
+              <input type="checkbox" id="repair" checked>
+              <span data-i18n="repairMesh">Repair mesh (watertight)</span>
+            </label>
+          </div>
+        </div>
+
+        <button class="btn-reconstruct" id="reconstructBtn" disabled>
+          <span class="btn-text" data-i18n-value="reconstruct">Reconstruct 3D Model</span>
+          <span class="spinner" style="display:none"></span>
+        </button>
+      </div>
+
+      <div class="card result-card" id="resultCard" style="display:none">
+        <h2 data-i18n="result">Result</h2>
+        <div class="result-info" id="resultInfo"></div>
+        <div class="result-actions">
+          <div class="action-row action-row--center">
+            <a class="btn-download" id="downloadBtn" data-i18n="downloadStl">⬇ Download STL</a>
+            <a class="btn-view" id="viewModelBtn" style="display:none" data-i18n="viewStl">🧊 View STL</a>
+            <button class="btn-print" id="printBtn" style="display:none" data-i18n="printToPrinter">🖨️ Send to Printer</button>
+            <button class="btn-slice" id="sliceBtn" style="display:none" data-i18n="sliceModel">🔪 Slice to 3MF</button>
+            <button class="btn-details" id="modelDetailsBtn" style="display:none" data-i18n="modelDetails">📋 Model Details</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <footer>
+      <p data-i18n="footerRapid">Powered by <strong>Tencent Hunyuan3D Rapid</strong> — modelhead v1.2</p>
+      <p class="status" id="status" data-i18n-value="statusConnecting">Checking server...</p>
+    </footer>
+  </div>
+
+  <script src="js/api-config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

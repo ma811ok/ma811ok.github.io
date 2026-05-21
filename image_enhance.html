@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="pageTitleEnhance">modelhead - Image Enhancement</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>modelhead</h1>
+      <p class="subtitle" data-i18n="subtitleEnhance">Upload a <strong>single image</strong>, enhance it with AI, then download the result.</p>
+      <p class="nav-links">
+        <a href="index.html" data-i18n="navToRapid">Switch to Rapid (single photo → 3D)</a>
+      </p>
+    </header>
+
+    <main>
+      <!-- Set API endpoint for this page -->
+      <script>window.API_ENDPOINT = '/image-enhance';</script>
+
+      <div class="card upload-card" id="uploadCard">
+        <div class="option-row">
+          <label for="userName" class="name-caption" data-i18n="name">Name:</label>
+          <span class="required-badge" data-i18n="required">Required</span>
+          <input type="text" id="userName" data-i18n-placeholder="namePlaceholder" placeholder="Please input your name" required>
+        </div>
+
+        <h2 data-i18n="uploadTitleEnhance">🖼️ Upload Image</h2>
+        <p class="views-hint" data-i18n="viewHintEnhance">Upload an image to enhance. The result will be shown below.</p>
+
+        <div class="single-view">
+          <div class="view-card">
+            <div class="view-label"><span data-i18n="viewImage">Image</span> <span class="required-badge" data-i18n="required">Required</span></div>
+            <div class="view-upload">
+              <div class="view-dropzone" id="dropZone">
+                <div class="view-dropzone-content" id="dropContent">
+                  <div class="view-icon">🖼️</div>
+                  <p class="drop-text" data-i18n="dropText">Click or drag a photo</p>
+                </div>
+                <div class="view-preview" id="preview" style="display:none">
+                  <img id="previewImage" alt="Uploaded image">
+                  <button class="view-change-btn" data-i18n-value="change">Change</button>
+                </div>
+              </div>
+              <input type="file" class="view-file-input" id="fileInput" accept="image/jpeg,image/png,image/webp" hidden>
+            </div>
+          </div>
+        </div>
+
+        <div class="option-row" style="margin-top:16px">
+          <label class="checkbox-label">
+            <input type="checkbox" id="removeBgCheckbox">
+            <span data-i18n="removeBg">Erase Background</span>
+          </label>
+        </div>
+
+        <div class="option-row">
+          <label for="promptInput" class="name-caption" data-i18n="promptLabel">Prompt (optional):</label>
+          <input type="text" id="promptInput" data-i18n-placeholder="promptPlaceholder" placeholder="Describe the style you want...">
+        </div>
+
+        <button class="btn-reconstruct" id="enhanceBtn" disabled>
+          <span class="btn-text" data-i18n-value="enhance">Enhance Image</span>
+          <span class="spinner" style="display:none"></span>
+        </button>
+      </div>
+
+      <div class="card result-card" id="resultCard" style="display:none">
+        <h2 data-i18n="result">Result</h2>
+        <div class="enhance-result" id="enhanceResult">
+          <div class="enhance-image-panel">
+            <h3 class="enhance-panel-title" data-i18n="enhancedImage">Enhanced</h3>
+            <img id="enhancedImageDisplay" alt="Enhanced image">
+          </div>
+        </div>
+        <div class="result-actions">
+          <div class="action-row action-row--center">
+            <a class="btn-reconstruct" id="downloadBtn" data-i18n="downloadImage" style="background: var(--success);">⬇ Download Image</a>
+            <button class="btn-reconstruct" id="reconstructFromEnhancedBtn" style="display:none">
+              <span class="btn-text" data-i18n-value="reconstructFromEnhanced">🖼️ Use Image to Generate 3D Model</span>
+              <span class="spinner" style="display:none"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <footer>
+      <p data-i18n="footerEnhance">Powered by <strong>AI Image Enhancement</strong> — modelhead v1.2</p>
+      <p class="status" id="status" data-i18n-value="statusConnecting">Checking server...</p>
+    </footer>
+  </div>
+
+  <script src="js/api-config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/image_enhance.js"></script>
+</body>
+</html>

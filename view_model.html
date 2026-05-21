@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="pageTitleViewer">modelhead - 3D Model Viewer</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+</head>
+<body>
+  <!-- Set API base for backend communication -->
+  <div class="container viewer-container">
+    <header>
+      <h1>modelhead</h1>
+      <p class="subtitle" data-i18n="subtitleViewer">View your reconstructed 3D model.</p>
+      <p class="back-link">
+        <a id="backToResultBtn" href="index.html" class="btn-back" data-i18n="backToResult">Back</a>
+      </p>
+    </header>
+
+    <main>
+      <div class="card viewer-card" id="viewerCard">
+        <div class="viewer-toolbar" id="viewerToolbar">
+          <button class="tool-btn" id="btnAutoRotate" data-i18n-value="autoRotate" title="Auto-rotate">⟳ Auto-rotate</button>
+          <button class="tool-btn" id="btnWireframe" data-i18n-value="wireframe" title="Toggle wireframe">◇ Wireframe</button>
+          <button class="tool-btn" id="btnResetView" data-i18n-value="resetView" title="Reset view">⌖ Reset view</button>
+          <button class="tool-btn" id="btnResetModel" data-i18n-value="resetModel" title="Reset model to center">⤺ Center model</button>
+        </div>
+        <div class="viewer-canvas-wrapper" id="viewerCanvasWrapper">
+          <div class="viewer-placeholder" id="viewerPlaceholder">
+            <div class="placeholder-icon">🧊</div>
+            <p id="loadStatus" data-i18n="loadingModel">Loading 3D model...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card info-card" id="modelInfoCard" style="display:none">
+        <h2>ℹ️ <span data-i18n="modelInfo">Model Info</span></h2>
+        <div id="modelInfoContent">
+          <div class="stat"><span data-i18n="statFormat">Format</span><span id="infoFormat">—</span></div>
+          <div class="stat"><span data-i18n="statFileSize">File size</span><span id="infoSize">—</span></div>
+          <div class="stat"><span data-i18n="statVertices">Vertices</span><span id="infoVertices">—</span></div>
+          <div class="stat"><span data-i18n="statFaces">Faces</span><span id="infoFaces">—</span></div>
+        </div>
+      </div>
+
+      <div class="card print-card" id="printCard" style="display:none">
+        <h2>🖨️ <span data-i18n="sendToPrinter">Send to Printer</span></h2>
+        <p class="print-hint" data-i18n="printHint">Send this 3D model directly to your Bambu Lab printer.</p>
+        <button class="btn-send-print" id="btnSendToPrinter" data-i18n-value="sendToPrinterBtn">🖨️ Send to Printer</button>
+        <p class="print-status" id="printStatus"></p>
+      </div>
+
+      <div class="card error-card" id="errorCard" style="display:none">
+        <h2 data-i18n="error">⚠️ Error</h2>
+        <p id="errorMessage"></p>
+      </div>
+    </main>
+
+    <footer>
+      <p data-i18n="footerViewer">Powered by <strong>Three.js</strong> — modelhead v1.2</p>
+    </footer>
+  </div>
+
+  <!-- Three.js from CDN -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script src="js/api-config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script type="module" src="js/view_model.js"></script>
+</body>
+</html>

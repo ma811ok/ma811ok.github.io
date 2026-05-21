@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="pageTitlePro">modelhead - 3D Head Reconstruction (Pro)</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>modelhead</h1>
+      <p class="subtitle" data-i18n="subtitlePro">Upload <strong>multiple photos</strong> (front, back, left, right) for a high-quality 3D-printable STL model.</p>
+      <p class="nav-links">
+        <a href="index.html" data-i18n="navToRapid">Switch to Rapid (single photo)</a>
+      </p>
+    </header>
+
+    <main>
+      <script>window.API_ENDPOINT = '/reconstruct-pro'; window.VIEWS = ['front', 'back', 'left', 'right'];</script>
+
+      <div class="card upload-card" id="uploadCard">
+        <div class="option-row">
+          <label for="userName" class="name-caption" data-i18n="name">Name:</label>
+          <span class="required-badge" data-i18n="required">Required</span>
+          <input type="text" id="userName" data-i18n-placeholder="namePlaceholder" placeholder="Please input your name" required>
+        </div>
+
+        <h2 data-i18n="uploadTitlePro">📸 Upload Photos</h2>
+        <p class="views-hint" data-i18n="viewHintPro">Upload photos from all available angles. Front view is required; additional views improve quality.</p>
+
+        <div class="views-grid">
+          <div class="view-card" data-view="front">
+            <div class="view-label"><span data-i18n="viewFront">Front</span> <span class="required-badge" data-i18n="required">Required</span></div>
+            <div class="view-upload" data-view="front">
+              <div class="view-dropzone" id="dropZoneFront">
+                <div class="view-dropzone-content" id="dropContentFront">
+                  <div class="view-icon">👤</div>
+                  <p class="drop-text" data-i18n="dropTextShort">Click or drag</p>
+                </div>
+                <div class="view-preview" id="previewFront" style="display:none">
+                  <img id="previewImageFront" alt="Front view">
+                  <button class="view-change-btn" data-view="front" data-i18n-value="change">Change</button>
+                </div>
+              </div>
+              <input type="file" class="view-file-input" id="fileInputFront" accept="image/jpeg,image/png,image/webp" hidden>
+            </div>
+          </div>
+
+          <div class="view-card" data-view="back">
+            <div class="view-label"><span data-i18n="viewBack">Back</span> <span class="optional-badge" data-i18n="optional">Optional</span></div>
+            <div class="view-upload" data-view="back">
+              <div class="view-dropzone" id="dropZoneBack">
+                <div class="view-dropzone-content" id="dropContentBack">
+                  <div class="view-icon">🔙</div>
+                  <p class="drop-text" data-i18n="dropTextShort">Click or drag</p>
+                </div>
+                <div class="view-preview" id="previewBack" style="display:none">
+                  <img id="previewImageBack" alt="Back view">
+                  <button class="view-change-btn" data-view="back" data-i18n-value="change">Change</button>
+                </div>
+              </div>
+              <input type="file" class="view-file-input" id="fileInputBack" accept="image/jpeg,image/png,image/webp" hidden>
+            </div>
+          </div>
+
+          <div class="view-card" data-view="left">
+            <div class="view-label"><span data-i18n="viewLeft">Left</span> <span class="optional-badge" data-i18n="optional">Optional</span></div>
+            <div class="view-upload" data-view="left">
+              <div class="view-dropzone" id="dropZoneLeft">
+                <div class="view-dropzone-content" id="dropContentLeft">
+                  <div class="view-icon">👈</div>
+                  <p class="drop-text" data-i18n="dropTextShort">Click or drag</p>
+                </div>
+                <div class="view-preview" id="previewLeft" style="display:none">
+                  <img id="previewImageLeft" alt="Left view">
+                  <button class="view-change-btn" data-view="left" data-i18n-value="change">Change</button>
+                </div>
+              </div>
+              <input type="file" class="view-file-input" id="fileInputLeft" accept="image/jpeg,image/png,image/webp" hidden>
+            </div>
+          </div>
+
+          <div class="view-card" data-view="right">
+            <div class="view-label"><span data-i18n="viewRight">Right</span> <span class="optional-badge" data-i18n="optional">Optional</span></div>
+            <div class="view-upload" data-view="right">
+              <div class="view-dropzone" id="dropZoneRight">
+                <div class="view-dropzone-content" id="dropContentRight">
+                  <div class="view-icon">👉</div>
+                  <p class="drop-text" data-i18n="dropTextShort">Click or drag</p>
+                </div>
+                <div class="view-preview" id="previewRight" style="display:none">
+                  <img id="previewImageRight" alt="Right view">
+                  <button class="view-change-btn" data-view="right" data-i18n-value="change">Change</button>
+                </div>
+              </div>
+              <input type="file" class="view-file-input" id="fileInputRight" accept="image/jpeg,image/png,image/webp" hidden>
+            </div>
+          </div>
+        </div>
+
+        <div class="options">
+          <div class="option-row">
+            <label for="scaleMm" data-i18n="maxSize">Max size:</label>
+            <input type="range" id="scaleMm" min="30" max="300" value="60">
+            <span id="scaleLabel">60 mm</span>
+          </div>
+          <div class="option-row">
+            <label class="checkbox-label">
+              <input type="checkbox" id="repair" checked>
+              <span data-i18n="repairMesh">Repair mesh (watertight)</span>
+            </label>
+          </div>
+        </div>
+
+        <button class="btn-reconstruct" id="reconstructBtn" disabled>
+          <span class="btn-text" data-i18n-value="reconstruct">Reconstruct 3D Model</span>
+          <span class="spinner" style="display:none"></span>
+        </button>
+      </div>
+
+      <div class="card result-card" id="resultCard" style="display:none">
+        <h2 data-i18n="result">Result</h2>
+        <div class="result-info" id="resultInfo"></div>
+        <div class="result-actions">
+          <div class="action-row action-row--center">
+            <a class="btn-download" id="downloadBtn" data-i18n="downloadStl">⬇ Download STL</a>
+            <a class="btn-view" id="viewModelBtn" style="display:none" data-i18n="viewStl">🧊 View STL</a>
+            <button class="btn-print" id="printBtn" style="display:none" data-i18n="printToPrinter">🖨️ Send to Printer</button>
+            <button class="btn-slice" id="sliceBtn" style="display:none" data-i18n="sliceModel">🔪 Slice to 3MF</button>
+            <button class="btn-details" id="modelDetailsBtn" style="display:none" data-i18n="modelDetails">📋 Model Details</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <footer>
+      <p data-i18n="footerPro">Powered by <strong>Tencent Hunyuan3D Pro</strong> — modelhead v1.2</p>
+      <p class="status" id="status" data-i18n-value="statusConnecting">Checking server...</p>
+    </footer>
+  </div>
+
+  <script src="js/api-config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

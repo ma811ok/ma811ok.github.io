@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="pageTitleViewer">modelhead - 3D Model Viewer</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+</head>
+<body>
+  <div class="container viewer-container">
+    <header>
+      <h1>modelhead</h1>
+      <p class="subtitle" data-i18n="subtitleViewer">Upload and inspect 3D model files (STL, OBJ, GLB/GLTF).</p>
+      <p class="nav-links">
+        <a href="index.html" data-i18n="navToRapid">Switch to Rapid (single photo)</a>
+        <span class="nav-sep">|</span>
+        <a href="index2.html" data-i18n="navToPro">Switch to Pro (multi-view)</a>
+      </p>
+    </header>
+
+    <main>
+      <div class="card upload-card" id="uploadCard">
+        <div class="viewer-upload-row">
+          <label class="btn-upload" for="modelFileInput" data-i18n="uploadModelBtn">📂 Choose 3D Model File</label>
+          <input type="file" id="modelFileInput" accept=".stl,.obj,.glb,.gltf" hidden>
+          <span id="fileName" class="file-name" data-i18n="noFileSelected">No file selected</span>
+        </div>
+        <div class="viewer-hint" data-i18n="viewerHint">Supports STL, OBJ, GLB/GLTF formats.</div>
+      </div>
+
+      <div class="card viewer-card" id="viewerCard">
+        <div class="viewer-toolbar" id="viewerToolbar">
+          <button class="tool-btn" id="btnAutoRotate" data-i18n-value="autoRotate" title="Auto-rotate">⟳ Auto-rotate</button>
+          <button class="tool-btn" id="btnWireframe" data-i18n-value="wireframe" title="Toggle wireframe">◇ Wireframe</button>
+          <button class="tool-btn" id="btnResetView" data-i18n-value="resetView" title="Reset view">⌖ Reset view</button>
+          <button class="tool-btn" id="btnResetModel" data-i18n-value="resetModel" title="Reset model to center">⤺ Center model</button>
+        </div>
+        <div class="viewer-canvas-wrapper" id="viewerCanvasWrapper">
+          <div class="viewer-placeholder" id="viewerPlaceholder">
+            <div class="placeholder-icon">🧊</div>
+            <p data-i18n="viewerPlaceholder">Upload a 3D model to preview</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card info-card" id="modelInfoCard" style="display:none">
+        <h2>ℹ️ <span data-i18n="modelInfo">Model Info</span></h2>
+        <div id="modelInfoContent">
+          <div class="stat"><span data-i18n="statFormat">Format</span><span id="infoFormat">—</span></div>
+          <div class="stat"><span data-i18n="statFileSize">File size</span><span id="infoSize">—</span></div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p data-i18n="footerViewer">Powered by <strong>Three.js</strong> — modelhead v1.2</p>
+    </footer>
+  </div>
+
+  <!-- Three.js from CDN -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script src="js/i18n.js"></script>
+  <script type="module" src="js/viewer.js"></script>
+</body>
+</html>
