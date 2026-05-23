@@ -13,7 +13,7 @@
 window.API_BASE = (function () {
   // ── Production override ──────────────────────────────────────────────
   // Paste your Cloudflare Tunnel or domain URL here:
-  var PRODUCTION_URL = 'https://snapshot-viewers-papers-statement.trycloudflare.com';
+  var PRODUCTION_URL = 'https://sticks-following-bus-worship.trycloudflare.com';
 
   if (PRODUCTION_URL) return PRODUCTION_URL;
 
@@ -27,3 +27,4 @@ window.API_BASE = (function () {
 
   // ── Same-origin fallback (when backend serves the frontend directly) ─
   return '';
+})();
