@@ -13,7 +13,7 @@
 window.API_BASE = (function () {
   // ── Production override ──────────────────────────────────────────────
   // Paste your Cloudflare Tunnel or domain URL here:
-  var PRODUCTION_URL = 'www.ma811.asia';
+  var PRODUCTION_URL = 'https://www.ma811.asia';
 
   if (PRODUCTION_URL) return PRODUCTION_URL;
 
