@@ -213,9 +213,26 @@ reconstructBtn.addEventListener('click', async () => {
   formData.append('generate_type', 'Normal');
   formData.append('face_count', '500000');
 
+  // Build headers — include Authorization only when we have a valid token.
+  // Invalid/expired tokens are cleared so they don't cause 401 errors.
+  const headers = {};
+  if (typeof getToken === 'function') {
+    const token = getToken();
+    if (token) {
+      if (typeof isTokenValid === 'function' && isTokenValid(token)) {
+        headers['Authorization'] = 'Bearer ' + token;
+      } else {
+        // Token is stale — clear it so it doesn't interfere
+        if (typeof clearToken === 'function') clearToken();
+      }
+    }
+  }
+
+  try {
   try {
     const response = await fetch(`${API_BASE}${API_ENDPOINT}`, {
       method: 'POST',
+      headers: headers,
       body: formData,
     });
 

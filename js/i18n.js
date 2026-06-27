@@ -19,6 +19,11 @@ const TRANSLATIONS = {
     'navToRapid': '切换到快速模式（单张照片）',
     'selectLang': '语言',
 
+    // Menu navigation
+    'menuRapid': '快速',
+    'menuPro': '专业',
+    'menuEnhance': '增强',
+
     // Upload section
     'name': '姓名：',
     'namePlaceholder': '请输入您的姓名',
@@ -70,6 +75,26 @@ const TRANSLATIONS = {
     'statusCannotReach': '✗ 无法连接服务器。请启动后端：uvicorn backend.server:app --reload --port 8001',
 
     // Errors from app.js
+    // Auth / Login page
+    'authPageTitle': 'modelhead - 登录',
+    'authSubtitle': '登录或创建账户以保存您的模型并访问全部功能。',
+    'navHome': '← 返回首页',
+    'authTabLogin': '登录',
+    'authTabRegister': '注册',
+    'authLogin': '登录',
+    'authLogout': '退出登录',
+    'authRegister': '注册',
+    'authEmail': '邮箱',
+    'authEmailPlaceholder': '请输入邮箱',
+    'authPassword': '密码',
+    'authPasswordPlaceholder': '请输入密码',
+    'authNickname': '昵称（选填）',
+    'authNicknamePlaceholder': '您的显示名称',
+    'authConfirmPassword': '确认密码',
+    'authConfirmPasswordPlaceholder': '再次输入密码',
+    'authSuccessMessage': '登录成功！正在跳转...',
+    'authPasswordMismatch': '两次输入的密码不一致',
+
     'errEnterName': '请输入您的姓名。',
     'errUnsupportedType': '不支持 {view} 视图的文件类型。请使用 JPEG、PNG 或 WebP 格式。',
     'errServerError': '服务器错误（{code}）',
@@ -159,6 +184,11 @@ const TRANSLATIONS = {
     'navToRapid': 'Switch to Rapid (single photo)',
     'selectLang': 'Language',
 
+    // Menu navigation
+    'menuRapid': 'Rapid',
+    'menuPro': 'Pro',
+    'menuEnhance': 'Enhance',
+
     // Upload section
     'name': 'Name:',
     'namePlaceholder': 'Please input your name',
@@ -210,6 +240,26 @@ const TRANSLATIONS = {
     'statusCannotReach': '✗ Cannot reach server. Start backend: uvicorn backend.server:app --reload --port 8001',
 
     // Errors from app.js
+    // Auth / Login page
+    'authPageTitle': 'modelhead - Login',
+    'authSubtitle': 'Login or create an account to save your models and access all features.',
+    'navHome': '← Back to Home',
+    'authTabLogin': 'Login',
+    'authTabRegister': 'Register',
+    'authLogin': 'Login',
+    'authLogout': 'Logout',
+    'authRegister': 'Register',
+    'authEmail': 'Email',
+    'authEmailPlaceholder': 'Enter your email',
+    'authPassword': 'Password',
+    'authPasswordPlaceholder': 'Enter your password',
+    'authNickname': 'Nickname (optional)',
+    'authNicknamePlaceholder': 'Your display name',
+    'authConfirmPassword': 'Confirm Password',
+    'authConfirmPasswordPlaceholder': 'Re-enter your password',
+    'authSuccessMessage': 'Login successful! Redirecting...',
+    'authPasswordMismatch': 'Passwords do not match',
+
     'errEnterName': 'Please enter your name.',
     'errUnsupportedType': 'Unsupported file type for {view} view. Use JPEG, PNG, or WebP.',
     'errServerError': 'Server error ({code})',
@@ -353,10 +403,15 @@ function createLangDropdown() {
   select.value = currentLang;
   select.addEventListener('change', () => setLanguage(select.value));
 
-  // Insert inside <h1> after "modelhead" text
-  const h1 = document.querySelector('h1');
-  if (h1) {
-    h1.appendChild(select);
+  // Insert into menu bar if available, otherwise fall back to h1
+  const menuLang = document.getElementById('menuLang');
+  if (menuLang) {
+    menuLang.appendChild(select);
+  } else {
+    const h1 = document.querySelector('h1');
+    if (h1) {
+      h1.appendChild(select);
+    }
   }
 }
 

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="authPageTitle">modelhead - Login</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+</head>
+<body>
+  <div class="container auth-page-container">
+    <header class="auth-header">
+      <div class="auth-brand-icon">🧠</div>
+      <h1>modelhead</h1>
+      <p class="subtitle" data-i18n="authSubtitle">Login or create an account to save your models and access all features.</p>
+    </header>
+
+    <main class="auth-main">
+      <div class="card auth-card" id="authCard">
+        <!-- Tab switcher -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabLogin" data-i18n="authTabLogin">Login</button>
+          <button class="auth-tab" id="tabRegister" data-i18n="authTabRegister">Register</button>
+        </div>
+
+        <!-- Login form -->
+        <form id="loginForm" class="auth-form active">
+          <div class="auth-error" id="loginError" style="display:none"></div>
+          <div class="form-group">
+            <label for="loginEmail" data-i18n="authEmail">Email</label>
+            <input type="email" id="loginEmail" data-i18n-placeholder="authEmailPlaceholder" placeholder="Enter your email" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="loginPassword" data-i18n="authPassword">Password</label>
+            <input type="password" id="loginPassword" data-i18n-placeholder="authPasswordPlaceholder" placeholder="Enter your password" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="auth-submit-btn" id="loginSubmitBtn">
+            <span class="btn-text" data-i18n-value="authLogin">Login</span>
+            <span class="spinner" style="display:none"></span>
+          </button>
+        </form>
+
+        <!-- Register form -->
+        <form id="registerForm" class="auth-form" style="display:none">
+          <div class="auth-error" id="registerError" style="display:none"></div>
+          <div class="form-group">
+            <label for="registerNickname" data-i18n="authNickname">Nickname (optional)</label>
+            <input type="text" id="registerNickname" data-i18n-placeholder="authNicknamePlaceholder" placeholder="Your display name">
+          </div>
+          <div class="form-group">
+            <label for="registerEmail" data-i18n="authEmail">Email</label>
+            <input type="email" id="registerEmail" data-i18n-placeholder="authEmailPlaceholder" placeholder="Enter your email" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="registerPassword" data-i18n="authPassword">Password</label>
+            <input type="password" id="registerPassword" data-i18n-placeholder="authPasswordPlaceholder" placeholder="Minimum 8 characters" required minlength="8" autocomplete="new-password">
+          </div>
+          <div class="form-group">
+            <label for="registerConfirmPassword" data-i18n="authConfirmPassword">Confirm Password</label>
+            <input type="password" id="registerConfirmPassword" data-i18n-placeholder="authConfirmPasswordPlaceholder" placeholder="Re-enter your password" required minlength="8" autocomplete="new-password">
+          </div>
+          <button type="submit" class="auth-submit-btn" id="registerSubmitBtn">
+            <span class="btn-text" data-i18n-value="authRegister">Register</span>
+            <span class="spinner" style="display:none"></span>
+          </button>
+        </form>
+
+        <!-- Success message (shown after login/register) -->
+        <div class="auth-success" id="authSuccess" style="display:none">
+          <div class="auth-success-icon">✅</div>
+          <p data-i18n="authSuccessMessage">Login successful! Redirecting...</p>
+        </div>
+      </div>
+    </main>
+
+    <p class="auth-footer-link">
+      <a href="index.html" data-i18n="navHome">← Back to Home</a>
+    </p>
+  </div>
+
+  <script>window.MENU_MODE = 'minimal';</script>
+  <script src="js/config.js"></script>
+  <script src="js/api-config.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // ── Tab switching ──
+    const tabLogin = document.getElementById('tabLogin');
+    const tabRegister = document.getElementById('tabRegister');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const loginError = document.getElementById('loginError');
+    const registerError = document.getElementById('registerError');
+    const authSuccess = document.getElementById('authSuccess');
+    const authCard = document.getElementById('authCard');
+
+    tabLogin.addEventListener('click', () => {
+      tabLogin.classList.add('active');
+      tabRegister.classList.remove('active');
+      loginForm.style.display = '';
+      registerForm.style.display = 'none';
+      loginError.style.display = 'none';
+      registerError.style.display = 'none';
+    });
+
+    tabRegister.addEventListener('click', () => {
+      tabRegister.classList.add('active');
+      tabLogin.classList.remove('active');
+      registerForm.style.display = '';
+      loginForm.style.display = 'none';
+      loginError.style.display = 'none';
+      registerError.style.display = 'none';
+    });
+
+    // If already logged in, redirect to home
+    if (isLoggedIn()) {
+      window.location.href = 'index.html';
+    }
+
+    // ── Login submit ──
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      loginError.style.display = 'none';
+
+      const btn = document.getElementById('loginSubmitBtn');
+      const btnText = btn.querySelector('.btn-text');
+      const spinner = btn.querySelector('.spinner');
+      btnText.style.display = 'none';
+      spinner.style.display = '';
+      btn.disabled = true;
+
+      try {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+
+        await login(email, password);
+
+        // Show success and redirect
+        authSuccess.style.display = '';
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'none';
+        document.querySelector('.auth-tabs').style.display = 'none';
+
+        setTimeout(() => {
+          const params = new URLSearchParams(window.location.search);
+          const redirect = params.get('redirect') || 'index.html';
+          window.location.href = redirect;
+        }, 1500);
+
+      } catch (err) {
+        loginError.textContent = err.message;
+        loginError.style.display = '';
+      } finally {
+        btnText.style.display = '';
+        spinner.style.display = 'none';
+        btn.disabled = false;
+      }
+    });
+
+    // ── Register submit ──
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      registerError.style.display = 'none';
+
+      const password = document.getElementById('registerPassword').value;
+      const confirm = document.getElementById('registerConfirmPassword').value;
+
+      if (password !== confirm) {
+        registerError.textContent = __('authPasswordMismatch') || 'Passwords do not match';
+        registerError.style.display = '';
+        return;
+      }
+
+      const btn = document.getElementById('registerSubmitBtn');
+      const btnText = btn.querySelector('.btn-text');
+      const spinner = btn.querySelector('.spinner');
+      btnText.style.display = 'none';
+      spinner.style.display = '';
+      btn.disabled = true;
+
+      try {
+        const email = document.getElementById('registerEmail').value.trim();
+        const nickname = document.getElementById('registerNickname').value.trim();
+
+        await register(email, password, nickname);
+
+        // Show success and redirect
+        authSuccess.style.display = '';
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'none';
+        document.querySelector('.auth-tabs').style.display = 'none';
+
+        setTimeout(() => {
+          const params = new URLSearchParams(window.location.search);
+          const redirect = params.get('redirect') || 'index.html';
+          window.location.href = redirect;
+        }, 1500);
+
+      } catch (err) {
+        registerError.textContent = err.message;
+        registerError.style.display = '';
+      } finally {
+        btnText.style.display = '';
+        spinner.style.display = 'none';
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

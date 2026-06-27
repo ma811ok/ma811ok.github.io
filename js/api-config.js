@@ -1,23 +1,17 @@
-// === API Configuration — Change the URL below to your backend address ===
+// === API Base URL — auto-detection logic ===
 //
-// How to use:
-//   1. Local dev:     leave as-is (auto-detects localhost → http://127.0.0.1:8001)
-//   2. Quick tunnel:  paste your trycloudflare URL below, e.g.:
-//                     PRODUCTION_URL = 'https://my-tunnel.trycloudflare.com';
-//   3. Your domain:   point to your named tunnel, e.g.:
-//                     PRODUCTION_URL = 'https://api.modelhead.com';
+// This script sets window.API_BASE based on:
+//   1. window.API_PRODUCTION_URL  (set by js/config.js — edit that file)
+//   2. localhost auto-detect      (http://127.0.0.1:8001)
+//   3. same-origin fallback       (for production, when backend serves frontend)
 //
-// All HTML pages load this script BEFORE their own <script> tags.
-// It sets window.API_BASE which app.js, image_enhance.js, and view_model.js read.
+// To change the production URL, edit js/config.js — don't touch this file.
 
 window.API_BASE = (function () {
-  // ── Production override ──────────────────────────────────────────────
-  // Paste your Cloudflare Tunnel or domain URL here:
-  var PRODUCTION_URL = 'https://www.ma811.asia';
+  // ── Production override (from config.js) ───────────────────────────
+  if (window.API_PRODUCTION_URL) return window.API_PRODUCTION_URL;
 
-  if (PRODUCTION_URL) return PRODUCTION_URL;
-
-  // ── Local development auto-detect ───────────────────────────────────
+  // ── Local development auto-detect ──────────────────────────────────
   if (
     window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1'
@@ -25,6 +19,6 @@ window.API_BASE = (function () {
     return 'http://127.0.0.1:8001';
   }
 
-  // ── Same-origin fallback (when backend serves the frontend directly) ─
+  // ── Same-origin fallback (backend serves the frontend directly) ────
   return '';
 })();

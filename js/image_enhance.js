@@ -145,10 +145,26 @@
     try {
       const apiBase = window.API_BASE || '';
       const endpoint = window.API_ENDPOINT || '/image-enhance';
+      // Build headers — include Authorization only when we have a valid token.
+      // Invalid/expired tokens are cleared so they don't cause 401 errors.
+      const headers = {};
+      if (typeof getToken === 'function') {
+        const token = getToken();
+        if (token) {
+          if (typeof isTokenValid === 'function' && isTokenValid(token)) {
+            headers['Authorization'] = 'Bearer ' + token;
+          } else {
+            // Token is stale — clear it so it doesn't interfere
+            if (typeof clearToken === 'function') clearToken();
+          }
+        }
+      }
+
       const url = apiBase + endpoint;
 
       const response = await fetch(url, {
         method: 'POST',
+        headers: headers,
         body: formData,
       });
 
