@@ -10,8 +10,39 @@
 
 const TOKEN_KEY = 'modelhead_token';
 const USER_KEY = 'modelhead_user';
+const LOGIN_PAGE = '/login.html';
+const REDIRECT_LOCK_KEY = 'modelhead_redirect_lock';
 
-// ── Token management ──
+// -- 401 redirect lock (prevent infinite loops)
+function _isRedirectLocked() {
+  try {
+    var locked = sessionStorage.getItem(REDIRECT_LOCK_KEY);
+    if (!locked) return false;
+    return Date.now() - parseInt(locked, 10) < 3000;
+  } catch (_) { return false; }
+}
+
+function _setRedirectLock() {
+  try { sessionStorage.setItem(REDIRECT_LOCK_KEY, String(Date.now())); } catch (_) {}
+}
+
+function _clearRedirectLock() {
+  try { sessionStorage.removeItem(REDIRECT_LOCK_KEY); } catch (_) {}
+}
+
+// -- Redirect to login with return URL
+function redirectToLogin() {
+  if (_isRedirectLocked()) {
+    console.warn('[auth] Redirect loop detected, clearing token.');
+    clearToken();
+    return;
+  }
+  _setRedirectLock();
+  var dest = encodeURIComponent(window.location.href);
+  window.location.href = LOGIN_PAGE + '?redirect=' + dest;
+}
+
+// -- Token management --
 
 function getToken() {
   return localStorage.getItem(TOKEN_KEY);
@@ -94,7 +125,65 @@ function getAuthHeaders() {
   return { Authorization: 'Bearer ' + token };
 }
 
-// ── Login ──
+// -- Fetch interceptor: auto-attach auth headers + 401 redirect
+(function() {
+  var _nativeFetch = window.fetch;
+  var _intercepting = false;
+
+  window.fetch = function(url, opts) {
+    if (_intercepting) return _nativeFetch.apply(window, arguments);
+
+    opts = opts || {};
+    var isSameOrigin = true;
+    try {
+      if (typeof url === 'string' && (url.startsWith('http://') || url.startsWith('https://'))) {
+        var u = new URL(url);
+        isSameOrigin = u.origin === window.location.origin;
+      }
+    } catch (_) {}
+
+    // Skip interceptor for auth endpoints (login/register) to avoid loops
+    if (typeof url === 'string') {
+      var s = url;
+      // Strip API_BASE prefix for matching
+      var base = window.API_BASE || '';
+      if (base && s.startsWith(base)) s = s.slice(base.length);
+      if (s.indexOf('/api/auth/') === 0) {
+        return _nativeFetch.apply(window, arguments);
+      }
+    }
+
+    // Auto-attach auth headers for same-origin requests
+    if (isSameOrigin) {
+      var authHeaders = getAuthHeaders();
+      if (authHeaders.Authorization) {
+        opts.headers = opts.headers || {};
+        // Only add if not explicitly set (respect manual overrides)
+        if (opts.headers instanceof Headers) {
+          if (!opts.headers.has('Authorization')) opts.headers.set('Authorization', authHeaders.Authorization);
+        } else {
+          if (!opts.headers.Authorization) opts.headers.Authorization = authHeaders.Authorization;
+        }
+      }
+    }
+
+    _intercepting = true;
+    var promise = _nativeFetch.call(window, url, opts);
+    _intercepting = false;
+
+    return promise.then(function(resp) {
+      // On 401, redirect to login (unless already on login page)
+      if (resp.status === 401 && isSameOrigin && !_isRedirectLocked()) {
+        if (window.location.pathname.indexOf(LOGIN_PAGE) === -1) {
+          redirectToLogin();
+        }
+      }
+      return resp;
+    });
+  };
+})();
+
+// -- Login --
 
 async function login(email, password) {
   const API_BASE = window.API_BASE || '';
@@ -226,9 +315,30 @@ function fillUserName() {
   }
 }
 
-// ── Initialize on DOM ready ──
+// -- Redirect unlock on login page --
+// When user arrives on login page, clear redirect lock so
+// the fetch interceptor can redirect again if needed.
+(function() {
+  if (window.location.pathname.indexOf(LOGIN_PAGE) !== -1) {
+    _clearRedirectLock();
+  }
+})();
+
+// -- Require auth for protected pages --
+// Redirects to login if no valid token. Skip on login page itself.
+function requireAuth() {
+  if (window.location.pathname.indexOf(LOGIN_PAGE) !== -1) {
+    return; // login page is public
+  }
+  if (!isLoggedIn()) {
+    redirectToLogin();
+  }
+}
+
+// -- Initialize on DOM ready --
 
 document.addEventListener('DOMContentLoaded', () => {
+  requireAuth();
   updateAuthUI();
   fillUserName();
 });
