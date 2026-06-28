@@ -33,7 +33,8 @@
     var links = [
       { href: 'index.html', key: 'menuRapid', label: 'Rapid' },
       { href: 'index2.html', key: 'menuPro', label: 'Pro' },
-      { href: 'image_enhance.html', key: 'menuEnhance', label: 'Enhance' }
+      { href: 'image_enhance.html', key: 'menuEnhance', label: 'Enhance' },
+      { href: 'profile.html', key: 'menuProfile', label: 'Profile' }
     ];
 
     links.forEach(function (link) {

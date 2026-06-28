@@ -247,13 +247,12 @@ async function fetchCurrentUser() {
 
 function logout() {
   clearToken();
-  // Redirect to login page if we're on an auth-required page
-  const currentPath = window.location.pathname;
-  if (currentPath.endsWith('/login.html') || currentPath === '/' || currentPath.endsWith('/index.html')) {
+  // If already on login page, just stay there
+  if (window.location.pathname.indexOf(LOGIN_PAGE) !== -1) {
     return;
   }
-  // Reload current page — pages should detect auth state change
-  window.location.reload();
+  // Redirect to login page — auth-required pages will redirect back after login
+  window.location.href = LOGIN_PAGE;
 }
 
 // ── Update navigation UI with auth state ──
